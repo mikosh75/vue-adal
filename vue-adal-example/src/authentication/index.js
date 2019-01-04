@@ -1,10 +1,16 @@
 import AuthenticationContext from 'adal-angular/lib/adal.js'
+const endpoints = {
+  // Map the location of a request to an API to a the identifier of the associated resource
+  'eCRF': 'https://mtz1-dev.exomtrials.com/study/ESRC1/Api.php'
+};
 
 const config = {
-  tenant: 'your aad tenant',
-  clientId: 'your aad application client id',
-  redirectUri: 'base uri for this application',
-  cacheLocation: 'localStorage'
+  tenant: 'c261ec17-d65f-4219-ad99-d4fa5ceb2ec2',
+  clientId: 'dd3dab61-7a0c-43aa-9537-a1fb1e9dfa15',
+  redirectUri: 'http://localhost:8080',
+  cacheLocation: 'localStorage',
+  endpoints: endpoints
+  // popUp: true
 };
 
 export default {
@@ -19,15 +25,13 @@ export default {
       if (this.authenticationContext.isCallback(window.location.hash) || window.self !== window.top) {
         // redirect to the location specified in the url params.
         this.authenticationContext.handleWindowCallback();
-      }
-      else {
+      } else {
         // try pull the user out of local storage
         let user = this.authenticationContext.getCachedUser();
 
         if (user) {
           resolve();
-        }
-        else {
+        } else {
           // no user at all - go sign in.
           this.signIn();
         }
@@ -39,7 +43,7 @@ export default {
    */
   acquireToken() {
     return new Promise((resolve, reject) => {
-      this.authenticationContext.acquireToken('<azure active directory resource id>', (error, token) => {
+      this.authenticationContext.acquireToken(config.clientId, (error, token) => {
         if (error || !token) {
           return reject(error);
         } else {
@@ -52,7 +56,7 @@ export default {
    * Issue an interactive authentication request for the current user and the api resource.
    */
   acquireTokenRedirect() {
-    this.authenticationContext.acquireTokenRedirect('<azure active directory resource id>');
+    this.authenticationContext.acquireTokenRedirect(config.clientId);
   },
   /**
    * @return {Boolean} Indicates if there is a valid, non-expired access token present in localStorage.
@@ -67,6 +71,9 @@ export default {
    */
   getUserProfile() {
     return this.authenticationContext.getCachedUser().profile;
+  },
+  getUser() {
+    return this.authenticationContext.getCachedUser();
   },
   signIn() {
     this.authenticationContext.login();

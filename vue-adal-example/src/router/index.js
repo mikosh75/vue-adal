@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
+import Esource from '@/components/Esource.vue'
 import authentication from '../authentication'
 
 Vue.use(Router)
@@ -12,6 +13,14 @@ const router = new Router({
       path: '/',
       name: 'HelloWorld',
       component: HelloWorld,
+      meta: {
+        requiresAuthentication: false
+      }
+    },
+    {
+      path: '/esource',
+      name: 'esource',
+      component: Esource,
       meta: {
         requiresAuthentication: true
       }

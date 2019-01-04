@@ -1,8 +1,18 @@
 <template>
-  <div v-if="isAuthenticated" id="app">
-    <img src="./assets/logo.png">
-    <router-view/>
-    <h2><a href="#" v-on:click.stop="logOut()">Log out</a></h2>
+  <div>
+    <nav>
+      <router-link to="/">Home</router-link>
+      <router-link to="/about">About</router-link>
+      <router-link to="/esource">eSource</router-link>
+    </nav>
+    <div v-if="isAuthenticated" id="app">
+      <img src="./assets/logo.png">
+      <router-view/>
+      <h2><a href="#" v-on:click.stop="logOut()">Log out {{ userName }}</a></h2>
+    </div>
+    <div v-else id="app">
+      <h2><a href="#" v-on:click="logIn()">Log In</a></h2>
+    </div>
   </div>
 </template>
 
@@ -18,6 +28,14 @@ export default {
   methods: {
     logOut() {
       authentication.signOut();
+    },
+    logIn() {
+      authentication.signIn();
+    }
+  },
+  data () {
+    return {
+      userName: authentication.isAuthenticated() ? authentication.getUser().userName : ''
     }
   }
 }
